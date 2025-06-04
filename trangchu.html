@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thế Giới Di Động - Trang chủ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        header {
+            background: linear-gradient(to right, #FFD700, #FFFFFF);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            color: #333;
+        }
+        nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        nav a:hover {
+            color: #FFD700;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .search-bar {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .search-bar input {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .category, .featured {
+            margin-bottom: 30px;
+        }
+        .category h2, .featured h2 {
+            color: #333;
+            text-align: center;
+        }
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 200px;
+            text-align: center;
+            padding: 10px;
+            transition: transform 0.2s;
+            text-decoration: none;
+            color: #333;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .card h3 {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .card p {
+            color: #666;
+            margin: 5px 0;
+        }
+        .card button {
+            background: #FFD700;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 5px;
+            color: white;
+        }
+        footer {
+            background: linear-gradient(to right, #FFD700, #FFFFFF);
+            padding: 10px;
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Thế Giới Di Động</h1>
+        <nav>
+            <a href="#danh-muc">Điện thoại</a>
+            <a href="#khuyen-mai">Khuyến mãi</a>
+            <a href="cart.html">Giỏ hàng</a>
+            <a href="login.html">Đăng nhập</a>
+            <a href="register.html">Đăng ký</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Tìm kiếm điện thoại...">
+        </div>
+
+        <section id="danh-muc" class="category">
+            <h2>Danh mục điện thoại</h2>
+            <div class="grid">
+                <a href="product-detail.html?id=iphone16" class="card">
+                    <img src="images/iphone16.jpeg" alt="iPhone">
+                    <h3>iPhone</h3>
+                </a>
+                <a href="product-detail.html?id=samsung_s23" class="card">
+                    <img src="images/ss.jpg" alt="Samsung">
+                    <h3>Samsung</h3>
+                </a>
+                <a href="product-detail.html?id=xiaomi13" class="card">
+                    <img src="images/xm13.jpg" alt="Xiaomi">
+                    <h3>Xiaomi</h3>
+                </a>
+                <a href="product-detail.html?id=oppo_reno8" class="card">
+                    <img src="images/opo.jpg" alt="OPPO">
+                    <h3>OPPO</h3>
+                </a>
+            </div>
+        </section>
+
+        <section id="san-pham-noi-bat" class="featured">
+            <h2>Sản phẩm nổi bật</h2>
+            <div class="grid">
+                <a href="product-detail.html?id=iphone16" class="card">
+                    <img src="images/iphone16.jpeg" alt="iPhone 16">
+                    <h3>iPhone 16</h3>
+                    <p>Giá: 22.990.000 VNĐ</p>
+                    <button onclick="event.preventDefault(); addToCart('iPhone 16', '22990000', 'images/iphone16.jpg')">Thêm vào giỏ</button>
+                </a>
+                <a href="product-detail.html?id=samsung_s23" class="card">
+                    <img src="images/ss.jpg" alt="Samsung Galaxy S23">
+                    <h3>Samsung Galaxy S23</h3>
+                    <p>Giá: 19.990.000 VNĐ</p>
+                    <button onclick="event.preventDefault(); addToCart('Samsung Galaxy S23', '19990000', 'images/ss.jpg')">Thêm vào giỏ</button>
+                </a>
+                <a href="product-detail.html?id=xiaomi13" class="card">
+                    <img src="images/xm13.jpg" alt="Xiaomi 13">
+                    <h3>Xiaomi 13</h3>
+                    <p>Giá: 15.990.000 VNĐ</p>
+                    <button onclick="event.preventDefault(); addToCart('Xiaomi 13', '15990000', 'images/xm13.jpg')">Thêm vào giỏ</button>
+                </a>
+                <a href="product-detail.html?id=oppo_reno8" class="card">
+                    <img src="images/opo.jpg" alt="OPPO Reno 8">
+                    <h3>OPPO Reno 8</h3>
+                    <p>Giá: 12.990.000 VNĐ</p>
+                    <button onclick="event.preventDefault(); addToCart('OPPO Reno 8', '12990000', 'images/opo.jpg')">Thêm vào giỏ</button>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2025 Thế Giới Di Động. Hỗ trợ: 1800-1060</p>
+    </footer>
+
+    <script>
+        function addToCart(name, price, image) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ name, price: parseInt(price), image, quantity: 1 });
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert('Đã thêm ' + name + ' vào giỏ hàng!');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            alert('Tìm kiếm: ' + e.target.value);
+        });
+    </script>
+</body>
+</html>

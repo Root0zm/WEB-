@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thế Giới Di Động - Thanh toán</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        header {
+            background: linear-gradient(to right, #FFD700, #FFFFFF);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            color: #333;
+        }
+        nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        nav a:hover {
+            color: #FFD700;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .cart-summary, .payment-form {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            flex: 1;
+            min-width: 300px;
+        }
+        .cart-summary h2, .payment-form h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+        .cart-item-info {
+            flex: 1;
+        }
+        .cart-item-info h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+        .cart-item-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .cart-total {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+        }
+        .payment-form label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #333;
+        }
+        .payment-form input, .payment-form select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        .payment-form button {
+            background: #FFD700;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            width: 100%;
+        }
+        .payment-form button:hover {
+            background: #e6c200;
+        }
+        footer {
+            background: linear-gradient(to right, #FFD700, #FFFFFF);
+            padding: 10px;
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Thế Giới Di Động</h1>
+        <nav>
+            <a href="trangchutrangchu.html">Trang chủ</a>
+            <a href="#danh-muc">Điện thoại</a>
+            <a href="#khuyen-mai">Khuyến mãi</a>
+            <a href="cart.html">Giỏ hàng</a>
+            <a href="login.html">Đăng nhập</a>
+            <a href="register.html">Đăng ký</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="cart-summary">
+            <h2>Tóm tắt đơn hàng</h2>
+            <div id="cart-items"></div>
+            <div class="cart-total">
+                Tổng cộng: <span id="cart-total">0 VNĐ</span>
+            </div>
+        </div>
+        <div class="payment-form">
+            <h2>Thông tin thanh toán</h2>
+            <form id="payment-form">
+                <label for="name">Họ và tên</label>
+                <input type="text" id="name" placeholder="Nguyễn Văn A" required>
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="email@example.com" required>
+                <label for="phone">Số điện thoại</label>
+                <input type="tel" id="phone" placeholder="0123456789" required>
+                <label for="address">Địa chỉ giao hàng</label>
+                <input type="text" id="address" placeholder="123 Đường Láng, Hà Nội" required>
+                <label for="payment-method">Phương thức thanh toán</label>
+                <select id="payment-method" required>
+                    <option value="cod">Thanh toán khi nhận hàng (COD)</option>
+                    <option value="card">Thẻ tín dụng/Thẻ ghi nợ</option>
+                    <option value="bank">Chuyển khoản ngân hàng</option>
+                </select>
+                <button type="submit">Xác nhận thanh toán</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Thế Giới Di Động. Hỗ trợ: 1800-1060</p>
+    </footer>
+
+    <script>
+        function loadCart() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartItemsDiv = document.getElementById('cart-items');
+            const cartTotalSpan = document.getElementById('cart-total');
+            cartItemsDiv.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartItemsDiv.innerHTML = '<p>Giỏ hàng trống! Vui lòng thêm sản phẩm.</p>';
+                return;
+            }
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                // Kiểm tra đường dẫn hình ảnh
+                const imageSrc = item.image && item.image.startsWith('images/') ? item.image : 'https://via.placeholder.com/80?text=No+Image';
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'cart-item';
+                itemDiv.innerHTML = `
+                    <img src="${imageSrc}" alt="${item.name}">
+                    <div class="cart-item-info">
+                        <h3>${item.name}</h3>
+                        <p>Giá: ${item.price.toLocaleString()} VNĐ</p>
+                        <p>Số lượng: ${item.quantity}</p>
+                        <p>Tổng: ${itemTotal.toLocaleString()} VNĐ</p>
+                    </div>
+                `;
+                cartItemsDiv.appendChild(itemDiv);
+            });
+
+            cartTotalSpan.textContent = `${total.toLocaleString()} VNĐ`;
+        }
+
+        function handlePayment(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const paymentMethod = document.getElementById('payment-method').value;
+
+            if (!name || !email || !phone || !address || !paymentMethod) {
+                alert('Vui lòng điền đầy đủ thông tin!');
+                return;
+            }
+
+            // Mô phỏng thanh toán thành công
+            alert(`Thanh toán thành công!\nHọ tên: ${name}\nEmail: ${email}\nĐịa chỉ: ${address}\nPhương thức: ${paymentMethod}`);
+            localStorage.removeItem('cart'); // Xóa giỏ hàng
+            loadCart(); // Cập nhật giao diện
+            document.getElementById('payment-form').reset(); // Reset form
+        }
+
+        document.getElementById('payment-form').addEventListener('submit', handlePayment);
+        window.onload = loadCart;
+    </script>
+</body>
+</html>

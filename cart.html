@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thế Giới Di Động - Giỏ hàng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        header {
+            background: linear-gradient(to right, #FFD700, #FFFFFF);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            color: #333;
+        }
+        nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        nav a:hover {
+            color: #FFD700;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .cart {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+        }
+        .cart h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+        .cart-item-info {
+            flex: 1;
+        }
+        .cart-item-info h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+        .cart-item-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .cart-item-actions button {
+            background: #e63946;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            color: white;
+            margin-left: 10px;
+        }
+        .cart-item-actions input {
+            width: 50px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .cart-total {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+        }
+        .checkout-button {
+            background: #FFD700;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+        .checkout-button:hover {
+            background: #e6c200;
+        }
+        footer {
+            background: linear-gradient(to right, #FFD700, #FFFFFF);
+            padding: 10px;
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Thế Giới Di Động</h1>
+        <nav>
+            <a href="trangchu.html">Trang chủ</a>
+            <a href="#danh-muc">Điện thoại</a>
+            <a href="#khuyen-mai">Khuyến mãi</a>
+            <a href="cart.html">Giỏ hàng</a>
+            <a href="login.html">Đăng nhập</a>
+            <a href="register.html">Đăng ký</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="cart">
+            <h2>Giỏ hàng của bạn</h2>
+            <div id="cart-items"></div>
+            <div class="cart-total">
+                Tổng cộng: <span id="cart-total">0 VNĐ</span>
+            </div>
+            <button class="checkout-button" onclick="window.location.href='checkout.html'">Thanh toán</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Thế Giới Di Động. Hỗ trợ: 1800-1060</p>
+    </footer>
+
+    <script>
+        function loadCart() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartItemsDiv = document.getElementById('cart-items');
+            const cartTotalSpan = document.getElementById('cart-total');
+            cartItemsDiv.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartItemsDiv.innerHTML = '<p>Giỏ hàng trống!</p>';
+                return;
+            }
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                // Kiểm tra đường dẫn hình ảnh
+                const imageSrc = item.image && item.image.startsWith('images/') ? item.image : 'https://via.placeholder.com/80?text=No+Image';
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'cart-item';
+                itemDiv.innerHTML = `
+                    <img src="${imageSrc}" alt="${item.name}">
+                    <div class="cart-item-info">
+                        <h3>${item.name}</h3>
+                        <p>Giá: ${item.price.toLocaleString()} VNĐ</p>
+                        <p>Tổng: ${itemTotal.toLocaleString()} VNĐ</p>
+                    </div>
+                    <div class="cart-item-actions">
+                        <input type="number" value="${item.quantity}" min="1" onchange="updateQuantity(${index}, this.value)">
+                        <button onclick="removeItem(${index})">Xóa</button>
+                    </div>
+                `;
+                cartItemsDiv.appendChild(itemDiv);
+            });
+
+            cartTotalSpan.textContent = `${total.toLocaleString()} VNĐ`;
+        }
+
+        function updateQuantity(index, quantity) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const newQuantity = Math.max(1, parseInt(quantity));
+            cart[index].quantity = newQuantity;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCart();
+        }
+
+        function removeItem(index) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCart();
+        }
+
+        window.onload = loadCart;
+    </script>
+</body>
+</html>

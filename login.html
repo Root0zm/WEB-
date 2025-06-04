@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thế Giới Di Động - Đăng nhập</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        header {
+            background: linear-gradient(to right, #FFD700, #FFFFFF);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            color: #333;
+        }
+        nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        nav a:hover {
+            color: #FFD700;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-group button {
+            background: #FFD700;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+        }
+        .form-group button:hover {
+            background: #e6c200;
+        }
+        .form-group a {
+            color: #FFD700;
+            text-decoration: none;
+        }
+        .form-group a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            background: linear-gradient(to right, #FFD700, #FFFFFF);
+            padding: 10px;
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            .form-group input {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Thế Giới Di Động</h1>
+        <nav>
+            <a href="trangchu.html">Trang chủ</a>
+            <a href="#danh-muc">Điện thoại</a>
+            <a href="#khuyen-mai">Khuyến mãi</a>
+            <a href="#gio-hang">Giỏ hàng</a>
+            <a href="login.html">Đăng nhập</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Đăng nhập</h2>
+        <div class="form-group">
+            <label for="phone">Số điện thoại</label>
+            <input type="tel" id="phone" placeholder="Nhập số điện thoại" required>
+        </div>
+        <div class="form-group">
+            <label for="otp">Mã xác nhận (OTP)</label>
+            <input type="text" id="otp" placeholder="Nhập mã OTP" required>
+        </div>
+        <div class="form-group">
+            <button onclick="login()">Đăng nhập</button>
+        </div>
+        <div class="form-group">
+            <p>Chưa có tài khoản? <a href="register.html">Đăng ký ngay</a></p>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Thế Giới Di Động. Hỗ trợ: 1800-1060</p>
+    </footer>
+
+    <script>
+        function login() {
+            const phone = document.getElementById('phone').value;
+            const otp = document.getElementById('otp').value;
+            if (phone && otp) {
+                alert('Đăng nhập thành công với số điện thoại: ' + phone);
+            } else {
+                alert('Vui lòng nhập đầy đủ số điện thoại và mã OTP!');
+            }
+        }
+    </script>
+</body>
+</html>

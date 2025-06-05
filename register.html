@@ -122,6 +122,10 @@
             <input type="password" id="password" placeholder="Nhập mật khẩu..." required>
         </div>
         <div class="form-group">
+            <label for="confirm-password">Xác nhận mật khẩu</label>
+            <input type="password" id="confirm-password" placeholder="Nhập lại mật khẩu..." required>
+        </div>
+        <div class="form-group">
             <label for="address">Địa chỉ</label>
             <input type="text" id="address" placeholder="Nhập địa chỉ...">
         </div>
@@ -141,58 +145,54 @@
         <p>© 2025 Thế Giới Di Động. Hỗ trợ: 1800-1060</p>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.min.js"></script>
     <script>
-        let db;
-
-        async function initDatabase() {
-            const SQL = await initSqlJs({
-                locateFile: () => 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.wasm'
-            });
-            const response = await fetch('products.db');
-            const arrayBuffer = await response.arrayBuffer();
-            const uInt8Array = new Uint8Array(arrayBuffer);
-            db = new SQL.Database(uInt8Array);
+        function validateEmail(emailAddress) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(emailAddress);
         }
 
         async function register() {
             const name = document.getElementById('name').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
             const address = document.getElementById('address').value.trim();
             const phone = document.getElementById('phone').value.trim();
 
-            if (!name || !email || !password) {
-                alert('Vui lòng điền đầy đủ họ tên, email và mật khẩu!');
+            if (!name || !email || !password || !confirmPassword) {
+                alert('Vui lòng điền đầy đủ họ tên, email, mật khẩu và xác nhận mật khẩu!');
                 return;
             }
 
-            // Kiểm tra email trùng
-            const checkStmt = db.prepare('SELECT email FROM users WHERE email = ?');
-            checkStmt.bind([email]);
-            if (checkStmt.step()) {
-                checkStmt.free();
-                alert('Email đã được sử dụng!');
+            if (!validateEmail(email)) {
+                alert('Email không hợp lệ!');
                 return;
             }
-            checkStmt.free();
 
-            // Thêm người dùng mới
-            const insertStmt = db.prepare(`
-                INSERT INTO users (name, email, password, address, phone) 
-                VALUES (?, ?, ?, ?, ?)
-            `);
-            insertStmt.bind([name, email, password, address || null, phone || null]);
-            insertStmt.step();
-            insertStmt.free();
+            if (password !== confirmPassword) {
+                alert('Mật khẩu xác nhận không khớp!');
+                return;
+            }
 
-            alert('Đăng ký thành công! Vui lòng đăng nhập.');
-            window.location.href = 'login.html';
+            try {
+                const response = await fetch('http://localhost:3000/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, address, phone })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message);
+                    window.location.href = 'login.html';
+                } else {
+                    alert(data.error);
+                }
+            } catch (error) {
+                console.error('Lỗi đăng ký:', error);
+                alert('Không thể kết nối server, vui lòng thử lại!');
+            }
         }
-
-        window.onload = async () => {
-            await initDatabase();
-        };
     </script>
 </body>
 </html>

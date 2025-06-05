@@ -129,18 +129,10 @@
         <p>© 2025 Thế Giới Di Động. Hỗ trợ: 1800-1060</p>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.min.js"></script>
     <script>
-        let db;
-
-        async function initDatabase() {
-            const SQL = await initSqlJs({
-                locateFile: () => 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.wasm'
-            });
-            const response = await fetch('products.db');
-            const arrayBuffer = await response.arrayBuffer();
-            const uInt8Array = new Uint8Array(arrayBuffer);
-            db = new SQL.Database(uInt8Array);
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
         }
 
         async function login() {
@@ -148,31 +140,35 @@
             const password = document.getElementById('password').value;
 
             if (!email || !password) {
-                alert('Vui lòng điền đầy đủ thông tin!');
+                alert('Vui lòng điền đầy đủ email và mật khẩu!');
                 return;
             }
 
-            const stmt = db.prepare('SELECT id, name, email FROM users WHERE email = ? AND password = ?');
-            stmt.bind([email, password]);
-            let user = null;
-
-            if (stmt.step()) {
-                user = stmt.getAsObject();
+            if (!validateEmail(email)) {
+                alert('Email không hợp lệ!');
+                return;
             }
-            stmt.free();
 
-            if (user) {
-                localStorage.setItem('user', JSON.stringify(user));
-                alert('Đăng nhập thành công!');
-                window.location.href = 'trangchu.html';
-            } else {
-                alert('Email hoặc mật khẩu không đúng!');
+            try {
+                const response = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    alert(data.message);
+                    window.location.href = 'trangchu.html';
+                } else {
+                    alert(data.error);
+                }
+            } catch (error) {
+                console.error('Lỗi đăng nhập:', error);
+                alert('Không thể kết nối server, vui lòng thử lại!');
             }
         }
-
-        window.onload = async () => {
-            await initDatabase();
-        };
     </script>
 </body>
 </html>

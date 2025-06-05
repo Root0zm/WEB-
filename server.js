@@ -7,9 +7,8 @@ const port = 3000;
 
 // Middleware
 app.use(cors({
-  origin: ['http://127.0.0.1:5500', 'http://localhost:5500']
+    origin: ['http://127.0.0.1:5500', 'http://localhost:5500']
 }));
-
 app.use(express.json());
 app.use(express.static('.')); // Phục vụ file tĩnh (HTML, images)
 
@@ -19,6 +18,42 @@ const db = new sqlite3.Database('products.db', (err) => {
         console.error('Lỗi mở database:', err.message);
     } else {
         console.log('Đã kết nối database.');
+    }
+});
+
+// API lấy danh sách sản phẩm
+app.get('/products', async (req, res) => {
+    const brand = req.query.brand;
+    const search = req.query.search;
+    try {
+        let query = `
+            SELECT p.*, c.name AS category_name
+            FROM products p
+            JOIN categories c ON p.category_id = c.id
+        `;
+        const params = [];
+        if (brand || search) {
+            query += ' WHERE';
+            if (brand) {
+                query += ' p.brand = ?';
+                params.push(brand);
+            }
+            if (brand && search) query += ' AND';
+            if (search) {
+                query += params.length ? ' p.name LIKE ?' : ' p.name LIKE ?';
+                params.push(`%${search}%`);
+            }
+        }
+        const products = await new Promise((resolve, reject) => {
+            db.all(query, params, (err, rows) => {
+                if (err) reject(err);
+                resolve(rows);
+            });
+        });
+        res.status(200).json(products);
+    } catch (error) {
+        console.error('Lỗi lấy sản phẩm:', error);
+        res.status(500).json({ error: 'Có lỗi xảy ra, vui lòng thử lại!' });
     }
 });
 
@@ -104,6 +139,45 @@ app.post('/login', async (req, res) => {
     } catch (error) {
         console.error('Lỗi đăng nhập:', error);
         res.status(500).json({ error: 'Có lỗi xảy ra, vui lòng thử lại!' });
+    }
+});
+
+// API thanh toán
+app.post('/Checkout', async (req, res) => {
+    const { userId, cart, name, email, phone, address, paymentMethod } = req.body;
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    try {
+        // Thêm đơn hàng
+        const orderId = await new Promise((resolve, reject) => {
+            db.run(
+                'INSERT INTO orders (user_id, total_amount, status) VALUES (?, ?, ?)',
+                [userId, total, 'pending'],
+                function (err) {
+                    if (err) reject(err);
+                    resolve(this.lastID);
+                }
+            );
+        });
+
+        // Thêm chi tiết đơn hàng
+        for (const item of cart) {
+            await new Promise((resolve, reject) => {
+                db.run(
+                    'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)',
+                    [orderId, item.id, item.quantity, item.price],
+                    (err) => {
+                        if (err) reject(err);
+                        resolve();
+                    }
+                );
+            });
+        }
+
+        res.status(200).json({ message: 'Đặt hàng thành công!' });
+    } catch (error) {
+        console.error('Lỗi đặt hàng:', error);
+        res.status(500).json({ error: 'Lỗi lưu đơn hàng!' });
     }
 });
 

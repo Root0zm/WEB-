@@ -124,7 +124,7 @@
     <header>
         <h1>Thế Giới Di Động</h1>
         <nav>
-            <a href="trangchutrangchu.html">Trang chủ</a>
+            <a href="trangchu.html">Trang chủ</a>
             <a href="#danh-muc">Điện thoại</a>
             <a href="#khuyen-mai">Khuyến mãi</a>
             <a href="cart.html">Giỏ hàng</a>
@@ -184,7 +184,7 @@
                 const itemTotal = item.price * item.quantity;
                 total += itemTotal;
                 // Kiểm tra đường dẫn hình ảnh
-                const imageSrc = item.image && item.image.startsWith('images/') ? item.image : 'https://via.placeholder.com/80?text=No+Image';
+                const imageSrc = item.image && item.image.startsWith('images/') ? item.image : 'images/ss.jpg';
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'cart-item';
                 itemDiv.innerHTML = `

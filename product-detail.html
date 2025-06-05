@@ -187,11 +187,7 @@
         }
 
         function addToCart() {
-            if (!localStorage.getItem('user')) {
-                alert('Vui lòng đăng nhập!');
-                window.location.href = 'login.html';
-                return;
-            }
+      
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
 
@@ -218,11 +214,7 @@
         }
 
         function buyNow() {
-            if (!localStorage.getItem('user')) {
-                alert('Vui lòng đăng nhập!');
-                window.location.href = 'login.html';
-                return;
-            }
+        
             addToCart();
             window.location.href = 'checkout.html';
         }

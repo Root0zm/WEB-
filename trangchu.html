@@ -34,63 +34,85 @@
             margin: 0 auto;
             padding: 20px;
         }
-        .search-bar {
-            margin: 20px 0;
-            text-align: center;
-        }
-        .search-bar input {
-            padding: 10px;
-            width: 300px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .category, .featured {
-            margin-bottom: 30px;
-        }
-        .category h2, .featured h2 {
-            color: #333;
-            text-align: center;
-        }
-        .grid {
+        .search-filter {
             display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
         }
-        .card {
+        .search-filter input, .search-filter select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            flex: 1;
+            min-width: 150px;
+        }
+        .category {
             background: white;
             border: 1px solid #ddd;
             border-radius: 5px;
-            width: 200px;
-            text-align: center;
-            padding: 10px;
-            transition: transform 0.2s;
-            text-decoration: none;
-            color: #333;
+            padding: 20px;
         }
-        .card:hover {
+        .category h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .product-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .product-card:hover {
             transform: scale(1.05);
         }
-        .card img {
+        .product-card img {
             width: 100%;
-            height: 150px;
+            height: 200px;
             object-fit: cover;
+            border-radius: 5px;
         }
-        .card h3 {
-            font-size: 16px;
+        .product-card h3 {
             margin: 10px 0;
+            font-size: 18px;
+            color: #333;
         }
-        .card p {
-            color: #666;
+        .product-card p {
+            color: #FFD700;
+            font-weight: bold;
             margin: 5px 0;
         }
-        .card button {
+        .product-card button {
             background: #FFD700;
             border: none;
-            padding: 8px;
+            padding: 8px 15px;
             cursor: pointer;
             border-radius: 5px;
             color: white;
+            margin: 5px;
+        }
+        .product-card button:hover {
+            background: #e6c200;
+        }
+        .product-card a {
+            display: inline-block;
+            background: #333;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .product-card a:hover {
+            background: #555;
         }
         footer {
             background: linear-gradient(to right, #FFD700, #FFFFFF);
@@ -99,12 +121,21 @@
             color: #333;
             margin-top: 20px;
         }
+        @media (max-width: 768px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+            .search-filter {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>Thế Giới Di Động</h1>
         <nav>
+            <a href="trangchu.html">Trang chủ</a>
             <a href="#danh-muc">Điện thoại</a>
             <a href="cart.html">Giỏ hàng</a>
             <a href="login.html">Đăng nhập</a>
@@ -113,60 +144,20 @@
     </header>
 
     <div class="container">
-        <div class="search-bar">
+        <section class="search-filter">
             <input type="text" id="searchInput" placeholder="Tìm kiếm điện thoại...">
-        </div>
-
-        <section id="danh-muc" class="category">
-            <h2>Danh mục điện thoại</h2>
-            <div class="grid">
-                <a href="product-detail.html?id=iphone16" class="card">
-                    <img src="images/iphone16.jpeg" alt="iPhone">
-                    <h3>iPhone</h3>
-                </a>
-                <a href="product-detail.html?id=samsung_s23" class="card">
-                    <img src="images/ss.jpg" alt="Samsung Galaxy S23">
-                    <h3>Samsung</h3>
-                </a>
-                <a href="product-detail.html?id=xiaomi13" class="card">
-                    <img src="images/xm13.jpg" alt="Xiaomi">
-                    <h3>Xiaomi</h3>
-                </a>
-                <a href="product-detail.html?id=oppo_reno8" class="card">
-                    <img src="images/opo.jpg" alt="OPPO">
-                    <h3>OPPO</h3>
-                </a>
-            </div>
+            <select id="brandFilter">
+                <option value="all">Tất cả hãng</option>
+                <option value="Apple">Apple</option>
+                <option value="Samsung">Samsung</option>
+                <option value="Xiaomi">Xiaomi</option>
+                <option value="OPPO">OPPO</option>
+            </select>
         </section>
 
-        <section id="san-pham-noi-bat" class="featured">
-            <h2>Sản phẩm nổi bật</h2>
-            <div class="grid">
-                <a href="product-detail.html?id=iphone16" class="card">
-                    <img src="images/iphone16.jpeg" alt="iPhone 16">
-                    <h3>iPhone 16</h3>
-                    <p>Giá: 22.990.000 VNĐ</p>
-                    <button onclick="event.preventDefault(); addToCart('iPhone 16', '22990000', 'images/iphone16.jpeg')">Thêm vào giỏ</button>
-                </a>
-                <a href="product-detail.html?id=samsung_s23" class="card">
-                    <img src="images/ss.jpg" alt="Samsung Galaxy S23">
-                    <h3>Samsung Galaxy S23</h3>
-                    <p>Giá: 19.990.000 VNĐ</p>
-                    <button onclick="event.preventDefault(); addToCart('Samsung Galaxy S23', '19990000', 'images/ss.jpg')">Thêm vào giỏ</button>
-                </a>
-                <a href="product-detail.html?id=xiaomi13" class="card">
-                    <img src="images/xm13.jpg" alt="Xiaomi 13">
-                    <h3>Xiaomi 13</h3>
-                    <p>Giá: 15.990.000 VNĐ</p>
-                    <button onclick="event.preventDefault(); addToCart('Xiaomi 13', '15990000', 'images/xm13.jpg')">Thêm vào giỏ</button>
-                </a>
-                <a href="product-detail.html?id=oppo_reno8" class="card">
-                    <img src="images/opo.jpg" alt="OPPO Reno 8">
-                    <h3>OPPO Reno 8</h3>
-                    <p>Giá: 12.990.000 VNĐ</p>
-                    <button onclick="event.preventDefault(); addToCart('OPPO Reno 8', '12990000', 'images/opo.jpg')">Thêm vào giỏ</button>
-                </a>
-            </div>
+        <section class="category" id="danh-muc">
+            <h2>Danh mục điện thoại</h2>
+            <div class="product-grid" id="product-grid"></div>
         </section>
     </div>
 
@@ -175,21 +166,92 @@
     </footer>
 
     <script>
+        const products = [
+            {
+                id: 'iphone16',
+                name: 'iPhone 16',
+                price: 22990000,
+                image: 'images/iphone16.jpeg',
+                brand: 'Apple'
+            },
+            {
+                id: 'samsung_s23',
+                name: 'Samsung Galaxy S23',
+                price: 19990000,
+                image: 'images/ss.jpg',
+                brand: 'Samsung'
+            },
+            {
+                id: 'xiaomi13',
+                name: 'Xiaomi 13',
+                price: 15990000,
+                image: 'images/xm13.jpg',
+                brand: 'Xiaomi'
+            },
+            {
+                id: 'oppo_reno8',
+                name: 'OPPO Reno 8',
+                price: 12990000,
+                image: 'images/opo.jpg',
+                brand: 'OPPO'
+            }
+        ];
+
+        function displayProducts(filteredProducts) {
+            const productGrid = document.getElementById('product-grid');
+            productGrid.innerHTML = '';
+
+            filteredProducts.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>${product.price.toLocaleString()} VNĐ</p>
+                    <button onclick="addToCart('${product.name}', ${product.price}, '${product.image}')">Thêm vào giỏ</button>
+                    <a href="product-detail.html?id=${product.id}">Xem chi tiết</a>
+                `;
+                productGrid.appendChild(productCard);
+            });
+        }
+
         function addToCart(name, price, image) {
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             const existingItem = cart.find(item => item.name === name);
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
-                cart.push({ name, price: parseInt(price), image, quantity: 1 });
+                cart.push({ name, price, image, quantity: 1 });
             }
             localStorage.setItem('cart', JSON.stringify(cart));
-            alert('Đã thêm ' + name + ' vào giỏ hàng!');
+            alert(`Đã thêm ${name} vào giỏ hàng!`);
         }
 
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            alert('Tìm kiếm: ' + e.target.value);
-        });
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().replace(/[<>"'&]/g, '');
+            const brandFilter = document.getElementById('brandFilter').value;
+
+            let filteredProducts = products;
+
+            if (searchTerm) {
+                filteredProducts = filteredProducts.filter(product =>
+                    product.name.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (brandFilter !== 'all') {
+                filteredProducts = filteredProducts.filter(product =>
+                    product.brand === brandFilter
+                );
+            }
+
+            displayProducts(filteredProducts);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', filterProducts);
+        document.getElementById('brandFilter').addEventListener('change', filterProducts);
+
+        window.onload = () => displayProducts(products);
     </script>
 </body>
 </html>

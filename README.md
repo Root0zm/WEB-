@@ -1,1 +1,1 @@
-Chạy trangchu.html để mở website
+Bật web với Start_web.bat

@@ -159,6 +159,7 @@
             </select>
             <select id="categoryFilter">
                 <option value="all">Tất cả danh mục</option>
+
             </select>
         </section>
 
@@ -193,6 +194,9 @@
             }
             stmt.free();
             const categoryFilter = document.getElementById('categoryFilter');
+            while (categoryFilter.options.length > 1) {
+            categoryFilter.remove(1);
+        }
             categories.forEach(cat => {
                 const option = document.createElement('option');
                 option.value = cat.id;

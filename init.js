@@ -71,7 +71,12 @@ db.serialize(() => {
     db.run(`
         CREATE TABLE IF NOT EXISTS orders (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
+            user_id INTEGER,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            phone TEXT NOT NULL,
+            address TEXT NOT NULL,
+            payment_method TEXT NOT NULL,
             total_amount INTEGER NOT NULL,
             status TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -183,10 +188,10 @@ db.serialize(() => {
                 console.log('Sản phẩm đã thêm.');
                 // Chèn đơn hàng
                 db.run(`
-                    INSERT OR IGNORE INTO orders (user_id, total_amount, status) VALUES
-                    (1, 42980000, 'pending'),
-                    (2, 19990000, 'completed'),
-                    (3, 7990000, 'cancelled')
+                    INSERT OR IGNORE INTO orders (name, email, phone, address, payment_method, total_amount, status) VALUES
+                    ('Nguyễn Văn A', 'nva@gmail.com', '0901234567', '123 Đường Láng, Hà Nội', 'COD', 42980000, 'pending'),
+                    ('Trần Thị B', 'ttb@gmail.com', '0912345678', '456 Nguyễn Trãi, TP.HCM', 'Thẻ tín dụng', 19990000, 'completed'),
+                    ('Lê Văn C', 'lvc@gmail.com', '0923456789', '789 Lê Lợi, Đà Nẵng', 'Chuyển khoản', 7990000, 'cancelled')
                 `, (err) => {
                     if (err) {
                         console.error('Lỗi thêm đơn hàng:', err.message);

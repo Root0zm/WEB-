@@ -183,7 +183,10 @@
                 const itemTotal = item.price * item.quantity;
                 total += itemTotal;
                 // Kiểm tra đường dẫn hình ảnh
-                const imageSrc = item.image && item.image.startsWith('images/') ? item.image : 'images/ss.jpg';
+                const imageSrc = item.image_url &&  
+                    (item.image_url.toLowerCase().endsWith('.jpg') || 
+                     item.image_url.toLowerCase().endsWith('.jpeg') || 
+                     item.image_url.toLowerCase().endsWith('.png')) ? item.image_url : 'images/ss.jpg';
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'cart-item';
                 itemDiv.innerHTML = `

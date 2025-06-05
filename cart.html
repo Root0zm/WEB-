@@ -150,11 +150,6 @@
         let isUpdating = false;
 
         function loadCart() {
-            if (!localStorage.getItem('user')) {
-                alert('Vui lòng đăng nhập!');
-                window.location.href = 'login.html';
-                return;
-            }
 
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
             const cartItemsDiv = document.getElementById('cart-items');
@@ -175,13 +170,13 @@
                 }
                 const itemTotal = item.price * item.quantity;
                 total += itemTotal;
-                const imageSrc = item.image && 
-                    typeof item.image === 'string' && 
-                    item.image.startsWith('images/') && 
-                    (item.image.toLowerCase().endsWith('.jpg') || 
-                     item.image.toLowerCase().endsWith('.jpeg') || 
-                     item.image.toLowerCase().endsWith('.png')) 
-                    ? item.image 
+                const imageSrc = item.image_url && 
+                    typeof item.image_url === 'string' && 
+                    item.image_url.startsWith('images/') && 
+                    (item.image_url.toLowerCase().endsWith('.jpg') || 
+                     item.image_url.toLowerCase().endsWith('.jpeg') || 
+                     item.image_url.toLowerCase().endsWith('.png')) 
+                    ? item.image_url 
                     : 'images/ss.jpg';
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'cart-item';

@@ -152,6 +152,13 @@
                 <option value="Samsung">Samsung</option>
                 <option value="Xiaomi">Xiaomi</option>
                 <option value="OPPO">OPPO</option>
+                <option value="Vivo">Vivo</option>
+                <option value="Realme">Realme</option>
+                <option value="Nokia">Nokia</option>
+                <option value="Huawei">Huawei</option>
+            </select>
+            <select id="categoryFilter">
+                <option value="all">Tất cả danh mục</option>
             </select>
         </section>
 
@@ -165,37 +172,34 @@
         <p>© 2025 Thế Giới Di Động. Hỗ trợ: 1800-1060</p>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.min.js"></script>
     <script>
-        const products = [
-            {
-                id: 'iphone16',
-                name: 'iPhone 16',
-                price: 22990000,
-                image: 'images/iphone16.jpeg',
-                brand: 'Apple'
-            },
-            {
-                id: 'samsung_s23',
-                name: 'Samsung Galaxy S23',
-                price: 19990000,
-                image: 'images/ss.jpg',
-                brand: 'Samsung'
-            },
-            {
-                id: 'xiaomi13',
-                name: 'Xiaomi 13',
-                price: 15990000,
-                image: 'images/xm13.jpg',
-                brand: 'Xiaomi'
-            },
-            {
-                id: 'oppo_reno8',
-                name: 'OPPO Reno 8',
-                price: 12990000,
-                image: 'images/opo.jpg',
-                brand: 'OPPO'
+        let db;
+
+        async function initDatabase() {
+            const SQL = await initSqlJs({
+                locateFile: () => 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.wasm'
+            });
+            const response = await fetch('products.db');
+            const arrayBuffer = await response.arrayBuffer();
+            const uInt8Array = new Uint8Array(arrayBuffer);
+            db = new SQL.Database(uInt8Array);
+
+            // Load categories into dropdown
+            const stmt = db.prepare('SELECT id, name FROM categories');
+            const categories = [];
+            while (stmt.step()) {
+                categories.push(stmt.getAsObject());
             }
-        ];
+            stmt.free();
+            const categoryFilter = document.getElementById('categoryFilter');
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.id;
+                option.textContent = cat.name;
+                categoryFilter.appendChild(option);
+            });
+        }
 
         function displayProducts(filteredProducts) {
             const productGrid = document.getElementById('product-grid');
@@ -205,23 +209,28 @@
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
                 productCard.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}">
+                    <img src="${product.image_url}" alt="${product.name}">
                     <h3>${product.name}</h3>
                     <p>${product.price.toLocaleString()} VNĐ</p>
-                    <button onclick="addToCart('${product.name}', ${product.price}, '${product.image}')">Thêm vào giỏ</button>
+                    <button onclick="addToCart('${product.name}', ${product.price}, '${product.image_url}')">Thêm vào giỏ</button>
                     <a href="product-detail.html?id=${product.id}">Xem chi tiết</a>
                 `;
                 productGrid.appendChild(productCard);
             });
         }
 
-        function addToCart(name, price, image) {
+        function addToCart(name, price, image_url) {
+            if (!localStorage.getItem('user')) {
+                alert('Vui lòng đăng nhập!');
+                window.location.href = 'login.html';
+                return;
+            }
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             const existingItem = cart.find(item => item.name === name);
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
-                cart.push({ name, price, image, quantity: 1 });
+                cart.push({ name, price, image_url, quantity: 1 });
             }
             localStorage.setItem('cart', JSON.stringify(cart));
             alert(`Đã thêm ${name} vào giỏ hàng!`);
@@ -230,28 +239,48 @@
         function filterProducts() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase().replace(/[<>"'&]/g, '');
             const brandFilter = document.getElementById('brandFilter').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
 
-            let filteredProducts = products;
+            let query = 'SELECT * FROM products';
+            let conditions = [];
+            let params = [];
 
             if (searchTerm) {
-                filteredProducts = filteredProducts.filter(product =>
-                    product.name.toLowerCase().includes(searchTerm)
-                );
+                conditions.push('LOWER(name) LIKE ?');
+                params.push(`%${searchTerm}%`);
+            }
+            if (brandFilter !== 'all') {
+                conditions.push('brand = ?');
+                params.push(brandFilter);
+            }
+            if (categoryFilter !== 'all') {
+                conditions.push('category_id = ?');
+                params.push(categoryFilter);
             }
 
-            if (brandFilter !== 'all') {
-                filteredProducts = filteredProducts.filter(product =>
-                    product.brand === brandFilter
-                );
+            if (conditions.length > 0) {
+                query += ' WHERE ' + conditions.join(' AND ');
             }
+
+            const stmt = db.prepare(query);
+            const filteredProducts = [];
+            stmt.bind(params);
+            while (stmt.step()) {
+                filteredProducts.push(stmt.getAsObject());
+            }
+            stmt.free();
 
             displayProducts(filteredProducts);
         }
 
         document.getElementById('searchInput').addEventListener('input', filterProducts);
         document.getElementById('brandFilter').addEventListener('change', filterProducts);
+        document.getElementById('categoryFilter').addEventListener('change', filterProducts);
 
-        window.onload = () => displayProducts(products);
+        window.onload = async () => {
+            await initDatabase();
+            filterProducts();
+        };
     </script>
 </body>
 </html>

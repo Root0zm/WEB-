@@ -63,27 +63,9 @@
             font-weight: bold;
             margin-bottom: 10px;
         }
-        .product-info .original-price {
+        .product-info p {
             color: #666;
-            text-decoration: line-through;
-            margin-left: 10px;
-        }
-        .product-info .discount {
-            color: #e63946;
-            font-weight: bold;
-        }
-        .product-info table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        .product-info table th, .product-info table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        .product-info table th {
-            background: #f9f9f9;
+            margin: 10px 0;
         }
         .action-buttons button {
             background: #FFD700;
@@ -137,18 +119,14 @@
     <div class="container">
         <section class="product-detail">
             <div class="product-image">
-                <img id="product-image" src="images/iphone16.jpeg" alt="Product">
+                <img id="product-image" src="" alt="">
             </div>
             <div class="product-info">
-                <h2 id="product-name">iPhone 16</h2>
-                <p class="price" id="product-price">22.990.000 VNĐ <span class="original-price" id="product-original-price">25.990.000 VNĐ</span> <span class="discount" id="product-discount">(Giảm 12%)</span></p>
-                <table id="product-specs">
-                    <tr>
-                        <th>Thông số</th>
-                        <th>Chi tiết</th>
-                    </tr>
-                    <!-- Thông số sẽ được thêm động -->
-                </table>
+                <h2 id="product-name"></h2>
+                <p class="price" id="product-price"></p>
+                <p id="product-brand"></p>
+                <p id="product-category"></p>
+                <p id="product-description"></p>
                 <div class="action-buttons">
                     <button onclick="addToCart()">Thêm vào giỏ</button>
                     <button onclick="buyNow()">Mua ngay</button>
@@ -163,157 +141,140 @@
         <p>© 2025 Thế Giới Di Động. Hỗ trợ: 1800-1060</p>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.min.js"></script>
     <script>
-        const products = {
-            'iphone16': {
-                name: 'iPhone 16',
-                price: 22990000,
-                originalPrice: 25990000,
-                discount: '12%',
-                image: 'images/iphone16.jpeg',
-                specs: [
-                    { key: 'Nhà sản xuất', value: 'Apple' },
-                    { key: 'Model', value: 'iPhone 16' },
-                    { key: 'Màu sắc', value: 'Đen' },
-                    { key: 'Kích thước', value: '146.7 x 71.5 x 7.8 mm' },
-                    { key: 'Trọng lượng', value: '174g' },
-                    { key: 'Màn hình', value: '6.1 inch, Super Retina XDR' },
-                    { key: 'CPU', value: 'A18 Bionic' },
-                    { key: 'RAM', value: '6GB' },
-                    { key: 'Dung lượng', value: '128GB' },
-                    { key: 'Camera', value: '48MP + 12MP' },
-                    { key: 'Pin', value: '3561 mAh' },
-                    { key: 'Tình trạng', value: 'Mới 100%' }
-                ]
-            },
-            'samsung_s23': {
-                name: 'Samsung Galaxy S23',
-                price: 19990000,
-                originalPrice: 22990000,
-                discount: '13%',
-                image: 'images/ss.jpg',
-                specs: [
-                    { key: 'Nhà sản xuất', value: 'Samsung' },
-                    { key: 'Model', value: 'Galaxy S23' },
-                    { key: 'Màu sắc', value: 'Xanh' },
-                    { key: 'Kích thước', value: '146.3 x 70.9 x 7.6 mm' },
-                    { key: 'Trọng lượng', value: '168g' },
-                    { key: 'Màn hình', value: '6.1 inch, Dynamic AMOLED 2X' },
-                    { key: 'CPU', value: 'Snapdragon 8 Gen 2' },
-                    { key: 'RAM', value: '8GB' },
-                    { key: 'Dung lượng', value: '256GB' },
-                    { key: 'Camera', value: '50MP + 10MP + 12MP' },
-                    { key: 'Pin', value: '3900 mAh' },
-                    { key: 'Tình trạng', value: 'Mới 100%' }
-                ]
-            },
-            'xiaomi13': {
-                name: 'Xiaomi 13',
-                price: 15990000,
-                originalPrice: 17990000,
-                discount: '11%',
-                image: 'images/xm13.jpg',
-                specs: [
-                    { key: 'Nhà sản xuất', value: 'Xiaomi' },
-                    { key: 'Model', value: 'Xiaomi 13' },
-                    { key: 'Màu sắc', value: 'Trắng' },
-                    { key: 'Kích thước', value: '152.8 x 71.5 x 8.1 mm' },
-                    { key: 'Trọng lượng', value: '189g' },
-                    { key: 'Màn hình', value: '6.36 inch, AMOLED' },
-                    { key: 'CPU', value: 'Snapdragon 8 Gen 2' },
-                    { key: 'RAM', value: '8GB' },
-                    { key: 'Dung lượng', value: '256GB' },
-                    { key: 'Camera', value: '50MP + 10MP + 12MP' },
-                    { key: 'Pin', value: '4500 mAh' },
-                    { key: 'Tình trạng', value: 'Mới 100%' }
-                ]
-            },
-            'oppo_reno8': {
-                name: 'OPPO Reno 8',
-                price: 12990000,
-                originalPrice: 14990000,
-                discount: '13%',
-                image: 'images/opo.jpg',
-                specs: [
-                    { key: 'Nhà sản xuất', value: 'OPPO' },
-                    { key: 'Model', value: 'Reno 8' },
-                    { key: 'Màu sắc', value: 'Vàng' },
-                    { key: 'Kích thước', value: '160.6 x 73.4 x 7.7 mm' },
-                    { key: 'Trọng lượng', value: '179g' },
-                    { key: 'Màn hình', value: '6.4 inch, AMOLED' },
-                    { key: 'CPU', value: 'MediaTek Dimensity 1300' },
-                    { key: 'RAM', value: '8GB' },
-                    { key: 'Dung lượng', value: '256GB' },
-                    { key: 'Camera', value: '50MP + 8MP + 2MP' },
-                    { key: 'Pin', value: '4500 mAh' },
-                    { key: 'Tình trạng', value: 'Mới 100%' }
-                ]
-            }
-        };
+        let db;
+
+        async function initDatabase() {
+            const SQL = await initSqlJs({
+                locateFile: () => 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.wasm'
+            });
+            const response = await fetch('products.db');
+            const arrayBuffer = await response.arrayBuffer();
+            const uInt8Array = new Uint8Array(arrayBuffer);
+            db = new SQL.Database(uInt8Array);
+        }
 
         function loadProduct() {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
-            const product = products[productId];
+
+            const stmt = db.prepare(`
+                SELECT p.*, c.name AS category_name 
+                FROM products p 
+                JOIN categories c ON p.category_id = c.id 
+                WHERE p.id = ?
+            `);
+            stmt.bind([productId]);
+            let product = null;
+
+            if (stmt.step()) {
+                product = stmt.getAsObject();
+            }
+            stmt.free();
 
             if (product) {
                 document.getElementById('product-name').textContent = product.name;
-                document.getElementById('product-image').src = product.image;
+                document.getElementById('product-image').src = product.image_url;
                 document.getElementById('product-image').alt = product.name;
-                document.getElementById('product-price').innerHTML = `${product.price.toLocaleString()} VNĐ <span class="original-price">${product.originalPrice.toLocaleString()} VNĐ</span> <span class="discount">(Giảm ${product.discount})</span>`;
-
-                const specsTable = document.getElementById('product-specs');
-                const tbody = specsTable.querySelector('tbody') || specsTable.createTBody();
-                tbody.innerHTML = '';
-                product.specs.forEach(spec => {
-                    const row = `<tr><td>${spec.key}</td><td>${spec.value}</td></tr>`;
-                    tbody.innerHTML += row;
-                });
+                document.getElementById('product-price').textContent = `${product.price.toLocaleString()} VNĐ`;
+                document.getElementById('product-brand').textContent = `Thương hiệu: ${product.brand}`;
+                document.getElementById('product-category').textContent = `Danh mục: ${product.category_name}`;
+                document.getElementById('product-description').textContent = product.description;
             } else {
                 document.querySelector('.product-info').innerHTML = '<p>Sản phẩm không tồn tại!</p>';
             }
         }
 
         function addToCart() {
+            if (!localStorage.getItem('user')) {
+                alert('Vui lòng đăng nhập!');
+                window.location.href = 'login.html';
+                return;
+            }
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
-            const product = products[productId];
+
+            const stmt = db.prepare('SELECT name, price, image_url FROM products WHERE id = ?');
+            stmt.bind([productId]);
+            let product = null;
+
+            if (stmt.step()) {
+                product = stmt.getAsObject();
+            }
+            stmt.free();
+
             if (product) {
                 let cart = JSON.parse(localStorage.getItem('cart')) || [];
                 const existingItem = cart.find(item => item.name === product.name);
                 if (existingItem) {
                     existingItem.quantity += 1;
                 } else {
-                    cart.push({ name: product.name, price: product.price, image: product.image, quantity: 1 });
+                    cart.push({ name: product.name, price: product.price, image_url: product.image_url, quantity: 1 });
                 }
                 localStorage.setItem('cart', JSON.stringify(cart));
-                alert('Đã thêm ' + product.name + ' vào giỏ hàng!');
+                alert(`Đã thêm ${product.name} vào giỏ hàng!`);
             }
         }
 
         function buyNow() {
-            alert('Chuyển đến trang thanh toán!');
+            if (!localStorage.getItem('user')) {
+                alert('Vui lòng đăng nhập!');
+                window.location.href = 'login.html';
+                return;
+            }
+            addToCart();
+            window.location.href = 'checkout.html';
         }
 
         function addToFavorites() {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
-            const product = products[productId];
+            const stmt = db.prepare('SELECT name FROM products WHERE id = ?');
+            stmt.bind([productId]);
+            let product = null;
+
+            if (stmt.step()) {
+                product = stmt.getAsObject();
+            }
+            stmt.free();
+
             if (product) {
-                alert('Đã thêm ' + product.name + ' vào danh sách yêu thích!');
+                let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+                if (!favorites.includes(product.name)) {
+                    favorites.push(product.name);
+                    localStorage.setItem('favorites', JSON.stringify(favorites));
+                    alert(`Đã thêm ${product.name} vào danh sách yêu thích!`);
+                } else {
+                    alert(`${product.name} đã có trong danh sách yêu thích!`);
+                }
             }
         }
 
         function shareProduct() {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
-            const product = products[productId];
+            const stmt = db.prepare('SELECT name FROM products WHERE id = ?');
+            stmt.bind([productId]);
+            let product = null;
+
+            if (stmt.step()) {
+                product = stmt.getAsObject();
+            }
+            stmt.free();
+
             if (product) {
-                alert('Chia sẻ sản phẩm ' + product.name + ' qua mạng xã hội!');
+                const shareUrl = `${window.location.origin}/product-detail.html?id=${productId}`;
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    alert(`Đã sao chép link chia sẻ cho ${product.name}!`);
+                });
             }
         }
 
-        window.onload = loadProduct;
+        window.onload = async () => {
+            await initDatabase();
+            loadProduct();
+        };
     </script>
 </body>
 </html>

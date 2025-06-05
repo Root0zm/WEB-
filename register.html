@@ -36,7 +36,11 @@
             background: white;
             border: 1px solid #ddd;
             border-radius: 5px;
+        }
+        .container h2 {
+            color: #333;
             text-align: center;
+            margin-bottom: 20px;
         }
         .form-group {
             margin-bottom: 15px;
@@ -46,12 +50,12 @@
             margin-bottom: 5px;
             color: #333;
         }
-        .form-group input, .form-group select {
-            width: 80%;
-            padding: 10px;
-            border: 1px solid #ccc;
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
             border-radius: 5px;
-            font-size: 16px;
+            box-sizing: border-box;
         }
         .form-group button {
             background: #FFD700;
@@ -60,16 +64,20 @@
             cursor: pointer;
             border-radius: 5px;
             color: white;
-            font-size: 16px;
+            width: 100%;
         }
         .form-group button:hover {
             background: #e6c200;
         }
-        .form-group a {
+        .form-group p {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .form-group p a {
             color: #FFD700;
             text-decoration: none;
         }
-        .form-group a:hover {
+        .form-group p a:hover {
             text-decoration: underline;
         }
         footer {
@@ -79,13 +87,10 @@
             color: #333;
             margin-top: 20px;
         }
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .container {
                 margin: 10px;
                 padding: 15px;
-            }
-            .form-group input, .form-group select {
-                width: 90%;
             }
         }
     </style>
@@ -98,45 +103,37 @@
             <a href="#danh-muc">Điện thoại</a>
             <a href="cart.html">Giỏ hàng</a>
             <a href="login.html">Đăng nhập</a>
+            <a href="register.html">Đăng ký</a>
         </nav>
     </header>
 
     <div class="container">
-        <h2>Đăng ký tài khoản</h2>
+        <h2>Đăng ký</h2>
         <div class="form-group">
-            <label for="fullName">Họ và tên</label>
-            <input type="text" id="fullName" placeholder="Nhập họ và tên" required>
-        </div>
-        <div class="form-group">
-            <label for="phone">Số điện thoại</label>
-            <input type="tel" id="phone" placeholder="Nhập số điện thoại" required>
+            <label for="name">Họ và tên</label>
+            <input type="text" id="name" placeholder="Nhập họ và tên..." required>
         </div>
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" id="email" placeholder="Nhập email">
+            <input type="email" id="email" placeholder="Nhập email..." required>
+        </div>
+        <div class="form-group">
+            <label for="password">Mật khẩu</label>
+            <input type="password" id="password" placeholder="Nhập mật khẩu..." required>
         </div>
         <div class="form-group">
             <label for="address">Địa chỉ</label>
-            <input type="text" id="address" placeholder="Nhập địa chỉ">
+            <input type="text" id="address" placeholder="Nhập địa chỉ...">
         </div>
         <div class="form-group">
-            <label for="dob">Ngày sinh</label>
-            <input type="date" id="dob">
-        </div>
-        <div class="form-group">
-            <label for="gender">Giới tính</label>
-            <select id="gender">
-                <option value="">Chọn giới tính</option>
-                <option value="male">Nam</option>
-                <option value="female">Nữ</option>
-                <option value="other">Khác</option>
-            </select>
+            <label for="phone">Số điện thoại</label>
+            <input type="text" id="phone" placeholder="Nhập số điện thoại...">
         </div>
         <div class="form-group">
             <button onclick="register()">Đăng ký</button>
         </div>
         <div class="form-group">
-            <p>Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
+            <p>Đã có tài khoản? <a href="login.html">Đăng nhập ngay</a></p>
         </div>
     </div>
 
@@ -144,16 +141,58 @@
         <p>© 2025 Thế Giới Di Động. Hỗ trợ: 1800-1060</p>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.min.js"></script>
     <script>
-        function register() {
-            const fullName = document.getElementById('fullName').value;
-            const phone = document.getElementById('phone').value;
-            if (fullName && phone) {
-                alert('Đăng ký thành công cho ' + fullName + ' với số điện thoại: ' + phone);
-            } else {
-                alert('Vui lòng nhập đầy đủ họ tên và số điện thoại!');
-            }
+        let db;
+
+        async function initDatabase() {
+            const SQL = await initSqlJs({
+                locateFile: () => 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.wasm'
+            });
+            const response = await fetch('products.db');
+            const arrayBuffer = await response.arrayBuffer();
+            const uInt8Array = new Uint8Array(arrayBuffer);
+            db = new SQL.Database(uInt8Array);
         }
+
+        async function register() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const address = document.getElementById('address').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+
+            if (!name || !email || !password) {
+                alert('Vui lòng điền đầy đủ họ tên, email và mật khẩu!');
+                return;
+            }
+
+            // Kiểm tra email trùng
+            const checkStmt = db.prepare('SELECT email FROM users WHERE email = ?');
+            checkStmt.bind([email]);
+            if (checkStmt.step()) {
+                checkStmt.free();
+                alert('Email đã được sử dụng!');
+                return;
+            }
+            checkStmt.free();
+
+            // Thêm người dùng mới
+            const insertStmt = db.prepare(`
+                INSERT INTO users (name, email, password, address, phone) 
+                VALUES (?, ?, ?, ?, ?)
+            `);
+            insertStmt.bind([name, email, password, address || null, phone || null]);
+            insertStmt.step();
+            insertStmt.free();
+
+            alert('Đăng ký thành công! Vui lòng đăng nhập.');
+            window.location.href = 'login.html';
+        }
+
+        window.onload = async () => {
+            await initDatabase();
+        };
     </script>
 </body>
 </html>
